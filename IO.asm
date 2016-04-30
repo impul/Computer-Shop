@@ -4,21 +4,27 @@ String20 db 20 dup (' ')
 Int10 db 10 dup(' ')
 NewLine db 10,13,'$'	
 .code
-	 
-ReadKeyProc PROC NEAR
+;=========================
+;Читання нажатої клавіші
+;=========================	 
+ReadKey PROC NEAR
 	 mov AH, 00h
 	 INT 16h
 ret 
-ReadKeyProc ENDP 
-
-write PROC NEAR
+ReadKey ENDP 
+;=========================
+;Вивід рядка на екран
+;=========================	 
+writeString PROC NEAR
    push AX
 	mov AH, 09h
 	INT 21h
    pop AX
 ret
-write ENDP
-
+writeString ENDP
+;=========================
+;Введення стрічки в буфер
+;=========================	 
 ReadString20 PROC NEAR;
 	xor SI, SI
 	mov CX,20
@@ -28,7 +34,7 @@ nullStr20:
 loop nullStr20
 	xor SI, SI
 read:
-	call ReadKeyProc
+	call ReadKey
 	 
 	cmp AL, 8
 	je BackSpace
@@ -74,7 +80,9 @@ BackSpace:
 
 jmp read
 ReadString20 ENDP 
-
+;=========================
+;Введення цілого
+;=========================	 
 ReadInt10 PROC NEAR
 	xor SI, SI
 	push AX
@@ -85,7 +93,7 @@ nullInt10:
 loop nullInt10
 	xor SI, SI
 ReadIntKey:
-	call ReadKeyProc
+	call ReadKey
 	 
 	cmp AL, 8
 	je BackSpaceI
@@ -134,7 +142,9 @@ dec DL
 
 jmp ReadIntKey
 ReadInt10 ENDP 
-
+;=========================
+;Виведення рядка + ентер
+;=========================	 
 writeln PROC NEAR
    push AX
    push DX
@@ -189,7 +199,9 @@ cifr:
 	loop vuv
 ret
 WriteInt ENDP
-
+;=========================
+;Читання числа з клавіатури
+;=========================	 
 ReadInt PROC NEAR
 		
 	xor AX, AX
