@@ -1,9 +1,11 @@
 .model small
 .stack 100h
 .code
+
 Start:	
 	mov ax , @data
 	mov ds , ax
+	call OpenFiles
 StartMenu:
 	call MainMenu
 	
@@ -43,7 +45,7 @@ StartMenu:
 	 je ACTION_edit		; 4- Редагування даних про телефону
 	 
 	cmp AL, '0'	
-	 je EXIT			; 0- Виходимо з програми	 
+	 je EXIT		 
 	 
 jmp StartMenu
 	 
@@ -84,9 +86,13 @@ jmp StartMenu
 	jmp StartMenu
 
 EXIT:
-
+	
+	call CloseFiles
+	
 	mov AX, 4C00h
 	INT 21h
+	
+include file.asm
 include IO.asm
 include menu.asm
 
