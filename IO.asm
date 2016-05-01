@@ -212,23 +212,22 @@ ReadInt PROC NEAR
 	call ReadString20
 	
 	StrToIntLoop:
-			mov cx,ax ; в CX кількість цифр
-			mov si,0 ; лічильник
-			xor AX,AX ; в AX будем записувати число
+			mov cx,ax 
+			mov si,0
+			xor AX,AX
 
-	cycle: ;цикл переводу
+	cycle: 
 		mov bL, String20(si)
 		sub bL,30h
 		add AX,BX
 		add si,1
 		cmp cx,1
-		jne mnoj ;якщо CX<>1 (не остання цифра)
-
-			
-	ret ; повернення з функції в програму
+		jne mnoj 
+	
+	ret
 	 mnoj:
 			mov BL,10
-			mul BL; Ax*10
+			mul BL
 	loop cycle
 ReadInt ENDP
 

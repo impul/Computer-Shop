@@ -4,12 +4,12 @@
 .code
 
 MainMenu proc
-			mov ax , 03H
-			int 10h		
+		mov ax , 03H
+		int 10h		
 			
-			mov dx , offset MainMenuMessage
-			mov ah , 09H
-			int 21H
+		mov dx , offset MainMenuMessage
+		mov ah , 09H
+		int 21H
 ret			
 MainMenu endp
 
