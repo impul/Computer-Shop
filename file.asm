@@ -1,44 +1,27 @@
 .data
 	FileHandle DW ?
 	FileName db "Database",0
-	FileHandleTMP DW ?
-	FileNameTMP db "Database_tmp",0		
-
+	ErrorOpenFile db "Can`t open database file!$"
 .code
 ;===============================
 ;Відкриття файла
 ;===============================
 OpenFiles PROC 
-	mov BX, 2			
-	mov CX, 0		
-	mov DX, offset FileName	
-	 mov AX, 716Ch	 	 
-	 INT 21h
-	jc createFile
-mov FileHandle, AX
-jmp createTMPfile
-createFile:
-	mov BX, 2		
-	mov CX, 0		
-	mov DX, offset FileName		
-	 mov AX, 3Ch 	 	 
-	 INT 21h
+	mov AX , 3D02H
+	mov DX, offset FileName	 
+	INT 21h
+	jc ErrorOpen
 	mov FileHandle, AX
+	ret
+ErrorOpen:
+	mov ah , 09H
+	mov dx , offset ErrorOpenFile
+	int 21H
+	mov ah , 01 
+	int 21H
 	
-createTMPfile:
-	lea DX, FileNameTMP
-	 mov AH, 41h
-	 INT 21h
-
-	lea SI, FileNameTMP
-	mov BX, 2		
-	mov CX, 0			
-	mov DX, 10h		
-	 mov AX, 716Ch	 	 
-	 INT 21h
-	mov FileHandleTMP, AX
-	
-ret
+	mov ah , 4CH
+	int 21H
 OpenFiles ENDP
 ;===============================
 ;Закриття файла
@@ -47,8 +30,5 @@ CloseFiles PROC NEAR
 	mov BX, FileHandle
 	 mov AH, 3eh
 	 int 21h
-	mov BX, FileHandleTMP
-	 mov AH, 3eh
-	 int 21h	 
 ret
 CloseFiles ENDP

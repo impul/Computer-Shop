@@ -1,5 +1,6 @@
 .model small
 .stack 100h
+.386
 .code
 
 Start:	
