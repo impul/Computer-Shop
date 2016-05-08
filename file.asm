@@ -1,34 +1,117 @@
 .data
-	FileHandle DW ?
-	FileName db "Database",0
-	ErrorOpenFile db "Can`t open database file!$"
+	SuccessfulOpening db 10,13, "File successful opening..",10,13,'$'
+	CloseFileMessage db 10,13,"File successful saved and closed!..",'$'
+	FileNotOpen db 10,13,"File not open..",'$'
+	FileAlreadyOpen db 10, 13,"File already open..",'$'
+	SaveFileMessage db 10,13,"File saved!..",'$'
+	FileOpenErrorMessage db 10,13,"Unable to open (find) the file $"
+	endl db 10,13,'$'
+	
 .code
-;===============================
-;Відкриття файла
-;===============================
-OpenFiles PROC 
-	mov AX , 3D02H
-	mov DX, offset FileName	 
-	INT 21h
-	jc ErrorOpen
-	mov FileHandle, AX
-	ret
-ErrorOpen:
+
+OpenFile:
+	;
+	; TODO : Open any file
+	;
+	cmp [FileIsOpen] , 0
+	je FileNotOpened
+	
 	mov ah , 09H
-	mov dx , offset ErrorOpenFile
+	mov dx , offset FileAlreadyOpen
 	int 21H
-	mov ah , 01 
+	jmp WeitKey
+			
+	FileNotOpened:
+	mov ax , 3D02H
+	mov dx , offset FileName
+	int 21H
+
+	jnc NOT_FileOpenError
+	jmp FileOpenError
+	NOT_FileOpenError:
+
+	mov [FileHandle] , ax
+	mov [FileIsOpen] , 1
+
+	mov ah , 09H
+	mov dx , offset SuccessfulOpening
+	int 21H
+			
+	mov dx , [FileIsOpen]
+	cmp dx , 1
+	je WeitKey
+
+	mov ah , 09H
+	mov dx , offset FileNotOpen
+	int 21H
+
+WeitKey:
+	mov ah , 01H
+	int 21H
+
+	mov ax , 03H
+	int 10h
+jmp StartMenu
+	;==============================
+SaveFile:
+
+	mov dx , [FileIsOpen]
+	cmp dx , 1
+	je SaveSileGood
+
+	mov ah , 09H
+	mov dx , offset FileNotOpen
+	int 21H
+
+	jmp WeitKey
+SaveSileGood:
+	mov ah , 3EH
+	mov bx , [FileHandle]
+	int 21H
+
+	mov ax , 3D02H
+	mov dx , offset FileName
+	int 21H
+
+	jc FileOpenError
+	mov [FileHandle] , ax
+
+	mov ah , 09H
+	mov dx , offset SaveFileMessage
+	int 21H
+
+	jmp WeitKey
+	
+FileOpenError:
+	mov AH, 09H
+	mov DX , offset FileOpenErrorMessage
+	int 21H
+	jmp WeitKey
+;==============================
+CloseFile:
+	mov ax , 03H
+	int 10h
+	mov dx , [FileIsOpen]
+	cmp dx , 1
+	je YesFileOpen
+
+	mov ah , 09H
+	mov dx , offset FileNotOpen
+	int 21H
+
+	jmp WeitKey
+
+	YesFileOpen:
+	mov ah , 3EH
+	mov bx , [FileHandle]
+	int 21H
+	mov [FileIsOpen] , 0
+	mov ah , 09H
+	mov dx , offset CloseFileMessage
 	int 21H
 	
-	mov ah , 4CH
+	mov AH , 01H
 	int 21H
-OpenFiles ENDP
-;===============================
-;Закриття файла
-;===============================
-CloseFiles PROC NEAR
-	mov BX, FileHandle
-	 mov AH, 3eh
-	 int 21h
-ret
-CloseFiles ENDP
+	
+	mov AX, 4C00h
+	INT 21h
