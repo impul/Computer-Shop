@@ -48,7 +48,7 @@ jmp StartMenu
 	jmp StartMenu
 	
 	ACTION_print:
-	;call PrintItems
+	call PrintItems
 	jmp StartMenu
 	
 	ACTION_add:
