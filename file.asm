@@ -7,6 +7,11 @@
 	FileOpenErrorMessage db 10,13,"Unable to open (find) the file $"
 	endl db 10,13,'$'
 	
+;=================================================================
+	itemName db 20 dup (32),'$'
+	itemPrice db 5 dup (32),'$'
+	itemCount db 5 dup (32),'$'
+	itemSize dw 30
 .code
 
 OpenFile:
@@ -39,7 +44,7 @@ OpenFile:
 			
 	mov dx , [FileIsOpen]
 	cmp dx , 1
-	je WeitKey
+	je LoadStruct
 
 	mov ah , 09H
 	mov dx , offset FileNotOpen
@@ -88,7 +93,7 @@ FileOpenError:
 	int 21H
 	jmp WeitKey
 ;==============================
-CloseFile:
+CloseFile:s
 	mov ax , 03H
 	int 10h
 	mov dx , [FileIsOpen]
@@ -99,7 +104,11 @@ CloseFile:
 	mov dx , offset FileNotOpen
 	int 21H
 
-	jmp WeitKey
+	mov AH , 01H
+	int 21H
+	
+	mov AX, 4C00h
+	INT 21h
 
 	YesFileOpen:
 	mov ah , 3EH
@@ -114,4 +123,16 @@ CloseFile:
 	int 21H
 	
 	mov AX, 4C00h
+	INT 21h
+
+LoadStruct:
+	mov BX, vPhoneInd
+	mov AX, itemSize
+	mul BX
+	mov DX, AX
+
+	mov BX, FileHandle
+	mov CX, 0
+	mov AL, 0
+	mov AH,42h
 	INT 21h
