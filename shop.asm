@@ -9,6 +9,7 @@
 	mov ax , @data
 	mov ds , ax
 	jmp OpenFile
+	call Init
 Start:	
 	
 StartMenu:
