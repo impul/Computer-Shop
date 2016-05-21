@@ -1,0 +1,7 @@
+|Mouse Logitech              |M90                         |2012|30      |
+|Asus Notebook               |U56E 6GB/i5/1TB/IntelHD 3000|2011|400     |
+|Asus Notebook               |ZenBook 16GB/i7/1TB/GTX 980M|2016|2000    |
+|Apple MacBook               |Air 13' 8GB/i7/256 SDD      |2015|1200    |
+|Kingston USB Flash Card     |DataTraveler 100 G3 16GB 3.0|2015|20      |
+|Apple iPad                  |Pro Wi-Fi 4G 128GB          |2016|1300    |
+|Samsung LCD Monitor VGA     |SyncMaster 740N 17"         |2008|35      |
