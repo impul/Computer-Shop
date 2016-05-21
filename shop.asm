@@ -1,77 +1,71 @@
+.286
 .model small
 .stack 100h
-.386
-.data
-	FileIsOpen dw 0
-	FileHandle DW ?
-	FileName db "Database",0
 .code
-	mov ax , @data
-	mov ds , ax
-	jmp OpenFile
-	call Init
-Start:	
-	
-StartMenu:
-	call MainMenu
-	
-	mov AH, 00h
-	INT 16h
+START:
+	 ;mov AH , 00
+	;mov AL ,10H
+	;int 10H
+	call Init 			
+ReadKey:
+	call ShowMainMenu	
+	mov al, 25
+	call ReadKeyProc
+	  
+	sub AL, 30h
 
-	cmp AL,'0'
-	jl StartMenu
-	cmp AL,'9'
-	jg StartMenu
+	cmp AL,0
+	jl ReadKey
+	cmp AL,9
+	jg ReadKey
 	
-	cmp AL, '1'	
-	je ACTION_about 
-
-	cmp AL, '2'	
+	cmp AL, 1	
+	 je ACTION_about
+	 
+	cmp AL, 2
 	je ACTION_print 
+	 
+	cmp AL, 3	
+	 je ACTION_add
+	 
+	cmp AL, 4		 
+	 je ACTION_remove
+	 
+	cmp AL, 5	 
+	 je ACTION_edit	
+	 
+	cmp AL, 0	
+	 je EXIT	 
+	 
+jmp ReadKey
 
-	cmp AL, '3'		
-	je ACTION_add 
-
-	cmp AL, '4'		
-	je ACTION_remove
-	
-	cmp AL, '5'	
-	je ACTION_edit
- 
-	cmp AL, '0'	
-	je EXIT		 
-
-jmp StartMenu
-	
-	ACTION_about:
+ACTION_about:
 	call About
-	jmp StartMenu
-	
-	ACTION_print:
-	call PrintItems
-	jmp StartMenu
-	
-	ACTION_add:
-	;call AddItem
-	jmp StartMenu
-	
-	ACTION_remove:
-	;call RemoveItem
-	jmp StartMenu
-	
-	ACTION_edit:
-	;call EditItem
-	jmp StartMenu
+	jmp ReadKey
 
+ACTION_print:
+	call PrintItems
+	jmp ReadKey
 	
+ACTION_add:
+	call AddItem
+	jmp ReadKey
+	
+ACTION_remove:
+	call RemoveItem
+	jmp ReadKey
+	
+ACTION_edit:
+	call EditItem
+	jmp ReadKey
 	
 EXIT:
-	jmp CloseFile
-	
-include file.asm
-include Actions.asm
+	call Destr	
+
+	mov AX, 4C00h
+	INT 21h
+
 include menu.asm
-include IO.asm
-
-
+include Actions.asm
 end start
+
